@@ -8,8 +8,6 @@ const logger = require('morgan');
 // Import routes
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-const adminsRouter = require('./routes/admins');
-const superAdminsRouter = require('./routes/superAdmins');
 
 // Import DB
 const { connectDB } = require('./db/dbConnection');
@@ -32,8 +30,6 @@ connectDB();
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/admins', adminsRouter);
-app.use('/superAdmins', superAdminsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
