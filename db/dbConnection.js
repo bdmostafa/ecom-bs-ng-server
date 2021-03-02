@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const mongoDB =  `http://localhost:27017/ecomDB`
+const mongoDB =  'mongodb://localhost:27017/ecomDB'
 // const mongoDB =  'mongodb://127.0.0.1/ecomDB'
 
 // Connecting database
