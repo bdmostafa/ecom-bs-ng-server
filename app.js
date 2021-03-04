@@ -12,6 +12,11 @@ const usersRouter = require('./routes/users');
 // Import DB
 const { connectDB } = require('./db/dbConnection');
 
+// Config
+require('dotenv').config({
+  path: './config/keys.env'
+})
+
 const app = express();
 
 // view engine setup
@@ -22,7 +27,7 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIES_SECRET));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Connecting DB

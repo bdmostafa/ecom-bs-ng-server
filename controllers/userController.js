@@ -59,10 +59,10 @@ module.exports.getUserController = async (req, res) => {
 };
 
 module.exports.getUsersController = async (req, res) => {
-  console.log('k')
   try {
     // Password is not allowed to pass to client section
     const users = await User.find({}, "-password");
+    console.log(users)
     res.send(users);
   } catch (err) {
     res.status(500).send(err);
@@ -75,7 +75,7 @@ module.exports.loginController = async (req, res) => {
   try {
     // Check User Email
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).send("Unable to login");
+    if (!user) return res.status(400).send("Unable to login. Email not found.");
 
     // Check User password
     const isMatched = await bcrypt.compare(password, user.password);
@@ -97,8 +97,9 @@ module.exports.loginController = async (req, res) => {
 
     // Successfully LoggedIn
     res.send("LoggedIn Successfully!");
-    
+
   } catch (err) {
+    console.log(err)
     res.status(500).send(err);
   }
 };
