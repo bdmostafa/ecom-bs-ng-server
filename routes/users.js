@@ -6,13 +6,14 @@ const {
     updateUserController, 
     logoutController, 
     loginController, 
-    deleteUserController
+    deleteUserController,
+    deleteUserBySuperAdminController
 } = require('../controllers/userController');
 
 const router = express.Router();
 const { auth } = require('../middleware/auth');
 const { admin } = require('../middleware/admin');
-// const { superAdmin } = require('../middleware/superAdmin');
+const { superAdmin } = require('../middleware/superAdmin');
 const { check } = require('express-validator');
 
 // Getting all users
@@ -82,11 +83,23 @@ router.patch(
     updateUserController
 )
 
-// Delete user
+// Delete user by logged in user
 router.delete(
     '/me',
     auth,
     deleteUserController
+)
+
+// Delete user by superAdmin
+router.delete(
+    '/delete',
+    [auth,
+    superAdmin,
+    check('userId', 'User ID not found.')
+        .isMongoId()
+        .notEmpty(),
+    ],
+    deleteUserBySuperAdminController
 )
 
 // Login user

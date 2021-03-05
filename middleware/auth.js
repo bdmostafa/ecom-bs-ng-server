@@ -14,7 +14,7 @@ module.exports.auth = async (req, res, next) => {
             // Getting User
             const user = await User.findById(decoded.id);
 
-            // if(!user) res.status(404).send("User not found");
+            if(!user) res.status(404).send("Logged in User not found");
 
             req.user = user;
             next();
