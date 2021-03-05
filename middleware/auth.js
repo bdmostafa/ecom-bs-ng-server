@@ -13,8 +13,12 @@ module.exports.auth = async (req, res, next) => {
 
             // Getting User
             const user = await User.findById(decoded.id);
+
+            // if(!user) res.status(404).send("User not found");
+
             req.user = user;
             next();
+
         } catch (err) {
             res.status(401).send('Unauthorized Access.')
         }

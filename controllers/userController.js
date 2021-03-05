@@ -16,8 +16,7 @@ module.exports.addUserController = async (req, res) => {
     "name",
     "email",
     "password",
-    "confirmPassword",
-    "role"
+    "confirmPassword"
   ]);
 
   // Collecting the user inputData and creating an object as user
@@ -40,19 +39,20 @@ module.exports.addUserController = async (req, res) => {
     });
 
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("err");
   }
 };
 
 module.exports.getUserController = async (req, res) => {
-  // const id = req.params.userId;
   const id = req.user._id;
 
   try {
     // Password is not allowed to pass to client section (-password)
     const user = await User.findById(id, "-password");
     if (!user) return res.status(404).send("User Not Exists");
+
     res.send(user);
+
   } catch (err) {
     res.status(500).send(err);
   }
@@ -62,10 +62,84 @@ module.exports.getUsersController = async (req, res) => {
   try {
     // Password is not allowed to pass to client section
     const users = await User.find({}, "-password");
-    console.log(users)
+
     res.send(users);
+
   } catch (err) {
     res.status(500).send(err);
+  }
+};
+
+module.exports.updateUserController = async (req, res, next) => {
+  const id = req.user._id;
+  const userInputValue = req.body;
+
+  // validation update operation and inputData
+  const keysInput = Object.keys(userInputValue);
+  const allowedForUpdates = ["name", "email", "password", "confirmPassword"];
+
+  // Check if any extra invalid field out of allowedForUpdates is requested or not
+  const isAllowed = keysInput.every((update) =>
+    allowedForUpdates.includes(update)
+  );
+  if (!isAllowed) return res.status(400).send("Invalid Update Operation.");
+
+  // Dealing with errors on express-validator
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(404).send(errors.array());
+
+  // After passing all errors and validations, executes try/catch
+  // Update user from server
+  try {
+    const user = await User.findOneAndUpdate(
+      {
+        _id: id
+      },
+      userInputValue,
+      {
+        // For adding new user to be updated
+        new: true,
+        // Active validating rules from Schema model when updating
+        runValidators: true,
+        // context: 'query'
+      }
+    );
+
+    if (!user) return res.status(404).send("User Not Found");
+
+    // Sending only 3 fields (without password) to the client
+    const { name, email, role } = user;
+    res.send({
+      name,
+      email,
+      role,
+    });
+
+    // res.send(user);
+  } catch (err) {
+    next(err);
+    // res.status(500).send(err);
+  }
+};
+
+module.exports.deleteUserController = async (req, res, next) => {
+  const id = req.user?._id;
+  if(!id) return res.status(404).send("User ID Not Found");
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).send(errors.array());
+
+  // Delete user from server
+  try {
+    const user = await User.findOneAndDelete({
+      _id: id,
+    });
+
+    if (!user) return res.status(404).send("User Not Found");
+    res.send({name, email, role});
+
+  } catch (err) {
+    next(err);
   }
 };
 

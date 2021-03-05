@@ -1,12 +1,22 @@
 const express = require('express');
-const { getUsersController, getUserController, addUserController, logoutController, loginController } = require('../controllers/userController');
+const { 
+    getUsersController, 
+    getUserController, 
+    addUserController,
+    updateUserController, 
+    logoutController, 
+    loginController, 
+    deleteUserController
+} = require('../controllers/userController');
+
 const router = express.Router();
 const { auth } = require('../middleware/auth');
-// const { admin } = require('../middleware/admin');
+const { admin } = require('../middleware/admin');
+// const { superAdmin } = require('../middleware/superAdmin');
 const { check } = require('express-validator');
 
 // Getting all users
-router.get('/', getUsersController);
+router.get('/', [auth, admin], getUsersController);
 
 // getting single user
 router.get(
@@ -37,6 +47,47 @@ router.post(
         })
     ],
     addUserController)
+
+// Update user data
+router.patch(
+    '/me',
+    [
+        auth,
+        check('name', 'Name is required')
+            .optional()
+            .notEmpty(),
+        check('email', 'Email is required')
+            .optional()
+            .notEmpty(),
+        check('email', 'Email must be valid')
+            .isEmail()
+            .optional()
+            .notEmpty(),
+        check('password', 'Password is required')
+            .optional()
+            .notEmpty(),
+        check('password', 'Password must be at least 6 characters').isLength({ min: 6 }),
+        check('confirmPassword', 'ConfirmPassword is required')
+            .optional()
+            .notEmpty(),
+        // custom validation
+        check('confirmPassword').custom((value, { req }) => {
+            if (value !== req.body.password) {
+                throw new Error('Confirm password doesn\'t match')
+            } else {
+                return true
+            }
+        })
+    ],
+    updateUserController
+)
+
+// Delete user
+router.delete(
+    '/me',
+    auth,
+    deleteUserController
+)
 
 // Login user
 router.post('/login', loginController)

@@ -45,7 +45,7 @@ const UsersSchema = new Schema(
         }
     },
     {
-        timestamp: true
+        timeStamp: true
     }
 );
 
@@ -65,6 +65,7 @@ UsersSchema.methods.generateAuthToken = function () {
   // Hashing data before saving into database
   UsersSchema.pre("save", async function (next) {
     const hashedPassword = await bcrypt.hash(this.password, 10);
+
     // When password is hashed already, no need to be hashed
     if (this.isModified("password")) this.password = hashedPassword;
     next();

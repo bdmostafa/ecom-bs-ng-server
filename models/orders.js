@@ -35,7 +35,7 @@ const OrdersSchema = new Schema(
         }
     },
     {
-        timestamp: true
+        timeStamp: true
     }
 );
 
