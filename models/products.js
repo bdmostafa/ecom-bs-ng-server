@@ -4,25 +4,38 @@ const Schema = mongoose.Schema;
 
 const ProductsSchema = new Schema(
     {
-        _id: {
-            type: Schema.Types.ObjectId,
-            required: true
-        },
-        productName: {
+        // _id: {
+        //     type: Schema.Types.ObjectId,
+        //     required: true
+        // },
+        title: {
             type: String,
-            required: [true, 'Product Name is required'],
+            required: [true, 'Product Name / Title is required'],
+            minLength: [4, 'Title must have 4 chars at least']
+        },
+        price: {
+            type: Number,
+            required: [true, 'Price is required'],
+        },
+        description: {
+            type: String,
+            required: false,
+            minLength: [10, 'Description must have 10 chars at least'],
+            maxLength: [30, 'Description length have to be 30 chars at maximum']
+        },
+        category: {
+            type: String,
+            required: [true, 'Category is required'],
+            minLength: [3, 'Title must have 3 chars at least']
         },
         image: {
             type: Buffer,
             required: [true, 'Image is required'],
         },
-        unitPrice: {
-            type: Float,
-            required: [true, 'Price is required'],
-        }
+        
     },
     {
-        timeStamp: true
+        timestamps: true
     }
 );
 

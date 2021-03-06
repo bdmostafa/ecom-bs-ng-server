@@ -8,6 +8,7 @@ const logger = require('morgan');
 // Import routes
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const productsRouter = require('./routes/products');
 
 // Import DB
 const { connectDB } = require('./db/dbConnection');
@@ -33,13 +34,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Connecting DB
 connectDB();
 
-app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/products', productsRouter);
+app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+// app.use(function(req, res, next) {
+//   next(createError(404));
+// });
 
 // error handler
 app.use(function(err, req, res, next) {

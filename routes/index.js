@@ -8,8 +8,8 @@ router.get('/', function(req, res, next) {
 });
 
 // Not Found Route
-// router.get('*', (req, res) => {
-//   res.status(404).send('404 Not Found')
-// })
+router.get('*', (req, res) => {
+  res.status(404).send('404 | Route Not Found')
+})
 
 module.exports = router;

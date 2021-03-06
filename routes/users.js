@@ -90,14 +90,15 @@ router.delete(
     deleteUserController
 )
 
-// Delete user by superAdmin
+// Delete user (authorization for superAdmin)
 router.delete(
     '/delete',
-    [auth,
-    superAdmin,
-    check('userId', 'User ID not found.')
-        .isMongoId()
-        .notEmpty(),
+    [
+        auth,
+        superAdmin,
+        check('userId', 'User ID not found.')
+            .isMongoId()
+            .notEmpty(),
     ],
     deleteUserBySuperAdminController
 )

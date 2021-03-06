@@ -70,7 +70,7 @@ module.exports.getUsersController = async (req, res) => {
   }
 };
 
-module.exports.updateUserController = async (req, res, next) => {
+module.exports.updateUserController = async (req, res) => {
   const id = req.user._id;
   const userInputValue = req.body;
 
@@ -117,8 +117,7 @@ module.exports.updateUserController = async (req, res, next) => {
 
     // res.send(user);
   } catch (err) {
-    next(err);
-    // res.status(500).send(err);
+    res.status(500).send(err);
   }
 };
 
@@ -139,7 +138,7 @@ module.exports.deleteUserController = async (req, res, next) => {
     res.send({name, email, role});
 
   } catch (err) {
-    next(err);
+    res.status(500).send(err);;
   }
 };
 
@@ -174,7 +173,7 @@ module.exports.deleteUserBySuperAdminController = async (req, res, next) => {
     res.send({name, email, role});
 
   } catch (err) {
-    next(err);
+    res.status(500).send(err);;
   }
 };
 

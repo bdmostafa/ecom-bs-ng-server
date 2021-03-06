@@ -8,7 +8,6 @@ module.exports.auth = async (req, res, next) => {
         
         try {
             // Verify token
-            // const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
             const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
             // Getting User
@@ -20,7 +19,7 @@ module.exports.auth = async (req, res, next) => {
             next();
 
         } catch (err) {
-            res.status(401).send('Unauthorized Access.')
+            res.status(401).send('No token provided or Unauthorized access.');
         }
 
     } else {
