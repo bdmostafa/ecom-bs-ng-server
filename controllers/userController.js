@@ -99,9 +99,10 @@ module.exports.updateUserController = async (req, res) => {
       {
         // For adding new user to be updated
         new: true,
+        // upsert: true,
         // Active validating rules from Schema model when updating
         runValidators: true,
-        // context: 'query'
+        context: 'query'
       }
     );
 
@@ -135,7 +136,7 @@ module.exports.deleteUserController = async (req, res, next) => {
     });
 
     if (!user) return res.status(404).send("User Not Found");
-    res.send({name, email, role});
+    res.send(user);
 
   } catch (err) {
     res.status(500).send(err);;
@@ -170,7 +171,7 @@ module.exports.deleteUserBySuperAdminController = async (req, res, next) => {
     });
 
     if (!user) return res.status(404).send("User Not Found");
-    res.send({name, email, role});
+    res.send(user);
 
   } catch (err) {
     res.status(500).send(err);;

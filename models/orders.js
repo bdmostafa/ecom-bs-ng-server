@@ -1,32 +1,37 @@
 const mongoose = require('mongoose');
+// const Product = require('./products');
+// const User = require('./users');
 
 const Schema = mongoose.Schema;
 
 const OrdersSchema = new Schema(
     {
-        _id: {
+        customer: {
             type: Schema.Types.ObjectId,
+            ref: 'User',
             required: true
         },
-        customerId: {
+        product: {
             type: Schema.Types.ObjectId,
-            required: true
+            ref: 'Product',
+            required: true,
         },
-        productName: {
-            type: String,
-            required: [true, 'Product Name is required'],
-        },
-        orderQty: {
+        quantity: {
             type: Number,
             required: [true, 'Order quantity is required'],
         },
-        unitPrice: {
-            type: Float,
-            required: [true, 'Price is required'],
-        },
-        totalPrice: {
-            type: Float,
-            required: [true, 'Total price is required'],
+        // unitPrice: {
+        //     type: Number,
+        //     required: [true, 'Unit Price is required'],
+        // },
+        // totalPrice: {
+        //     type: Number,
+        //     required: [true, 'Total price is required'],
+        // },
+        date: {
+            type: Date,
+            required: [true, 'Order date is required'],
+            default: new Date().toLocaleDateString()
         },
         status: {
             type: String,

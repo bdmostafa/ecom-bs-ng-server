@@ -71,6 +71,15 @@ UsersSchema.methods.generateAuthToken = function () {
     next();
   });
 
+  // Hashing data before saving into database
+  // UsersSchema.pre("findOneAndUpdate", async function (next) {
+  //   const hashedPassword = await bcrypt.hash(this.password, 10);
+
+  //   // When password is hashed already, no need to be hashed
+  //   if (this.isModified("password")) this.password = hashedPassword;
+  //   next();
+  // });
+
 const User = mongoose.model('User', UsersSchema);
 
 module.exports = User;
