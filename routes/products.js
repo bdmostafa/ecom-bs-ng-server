@@ -1,18 +1,21 @@
+// Dependencies
 const express = require('express');
+const router = express.Router();
+const { check } = require('express-validator');
+
+// Middleware
+const { auth } = require('../middleware/auth');
+const { admin } = require('../middleware/admin');
+const { adminOrSuperAdmin } = require('../middleware/adminOrSuperAdmin');
+const { superAdmin } = require('../middleware/superAdmin');
 const { 
     getProductsController, 
     getProductByIdController, 
     addProductController,
     updateProductsController,
-    generateProductsController
+    generateProductsController,
+    deleteProductController
 } = require('../controllers/productController');
-
-const router = express.Router();
-const { auth } = require('../middleware/auth');
-const { admin } = require('../middleware/admin');
-const { adminOrSuperAdmin } = require('../middleware/adminOrSuperAdmin');
-const { check } = require('express-validator');
-const { superAdmin } = require('../middleware/superAdmin');
 
 // Getting all product (user authentication requirement only)
 router.get('/', auth, getProductsController);
@@ -27,7 +30,7 @@ router.get(
     generateProductsController
 );
 
-// getting single product by Id (user authentication requirement only)
+// Getting single product by Id (user authentication requirement only)
 router.get(
     '/:productId',
     [
@@ -51,14 +54,15 @@ router.post(
         check('category', 'Category is required.').notEmpty(),
         check('image', 'Image is required.').notEmpty()
     ],
-    addProductController)
+    addProductController
+);
 
-// Update product data (authorization for admin and super admin)
+// Update product data (authorization for super admin)
 router.patch(
     '/update/:productId',
     [
         auth,
-        adminOrSuperAdmin,
+        superAdmin,
         check('productId', 'Product Not Found. Id is not valid').isMongoId(),
         check('title', 'Title is required.')
             .optional()
@@ -77,6 +81,17 @@ router.patch(
             .notEmpty()
     ],
     updateProductsController
+);
+
+// Delete single product by Id (authorization for only super admin)
+router.delete(
+    '/delete/:productId',
+    [
+        check('productId', 'Product Not Found. Id is not valid').isMongoId(),
+        auth,
+        superAdmin
+    ],
+    deleteProductController
 );
 
 module.exports = router;

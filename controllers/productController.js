@@ -10,9 +10,18 @@ module.exports.addProductController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).send(errors.array());
 
+  // Pick only valid fields
+  const pickedProperty = _.pick(req.body, [
+    "title",
+    "price",
+    "description",
+    "category",
+    "image"
+  ]);
+
   // If valid, then execute to add a new product
   try {
-    const newProduct = new Product({...req.body});
+    const newProduct = new Product(pickedProperty);
     await newProduct.save();
 
     res.send(newProduct);
@@ -34,31 +43,53 @@ module.exports.getProductsController = async (req, res) => {
 
 module.exports.generateProductsController = async (req, res) => {
   try {
-    const response = await axios.get(process.env.PRODUCT_URL);
-    if(!response) return res.status(404).send("Response data is not available");
+    // Product generates limit is 10
+    const productResponse = await axios.get(process.env.PRODUCT_API);
+    if (!productResponse) return res.status(404).send("Product data is not available");
 
-    const products = await Product.insertMany(response.data, "-id");
+    const products = await Product.insertMany(productResponse.data, "-id");
     res.send(products);
-  
+
   } catch (err) {
     res.status(500).send(err);
   }
 };
 
 module.exports.getProductByIdController = async (req, res) => {
+  const id = req.params.productId;
+
   // Check on validationResult
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(404).send("Product Not Found");
 
   // Getting product by ID from server
   try {
-    const id = req.params.productId;
     const product = await Product.findById(id);
-  
+
     if (!product) return res.status(404).send("Product Not Found");
 
     res.send(product);
-    
+
+  } catch (err) {
+    res.status(500).send(err);;
+  }
+};
+
+module.exports.deleteProductController = async (req, res) => {
+  const id = req.params.productId;
+  
+  // Check on validationResult
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(404).send("Product Not Found");
+
+  // Delete product from server
+  try {
+    const product = await Product.findByIdAndDelete(id);
+
+    if (!product) return res.status(404).send("Product Not Found");
+
+    res.send(product);
+
   } catch (err) {
     res.status(500).send(err);;
   }
@@ -98,7 +129,7 @@ module.exports.updateProductsController = async (req, res) => {
     );
     if (!product) return res.status(404).send("Product Not Found");
     res.send(product);
-    
+
   } catch (err) {
     res.status(500).send(err);;
   }

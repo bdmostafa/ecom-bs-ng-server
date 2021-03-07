@@ -71,7 +71,7 @@ module.exports.getOrdersController = async (req, res) => {
 };
 
 module.exports.getPendingOrdersController = async (req, res) => {
-    console.log('goes here... pending', req)
+    // console.log('goes here... pending', req)
     // Getting all pending orders from server
     try {
         const pendingOrders = await Order.find({ 
@@ -110,6 +110,7 @@ module.exports.getOrderController = async (req, res) => {
                 'product',
                 '_id title price category'
             );
+
         if (!order) return res.status(404).send("Order Not Exists");
 
         const updatedOrderWithTotalPrice = {
@@ -125,7 +126,6 @@ module.exports.getOrderController = async (req, res) => {
         };
 
         res.send(updatedOrderWithTotalPrice);
-        // res.send(order);
 
     } catch (err) {
         res.status(500).send(err);
@@ -133,7 +133,7 @@ module.exports.getOrderController = async (req, res) => {
 };
 
 module.exports.getOrdersByDateController = async (req, res) => {
-    console.log('goes here... by date')
+    // console.log('goes here... by date')
     // Check on validation
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).send(errors.array());

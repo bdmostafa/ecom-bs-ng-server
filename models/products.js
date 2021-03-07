@@ -17,7 +17,7 @@ const ProductsSchema = new Schema(
             type: String,
             required: false,
             minLength: [10, 'Description must have 10 chars at least'],
-            maxLength: [30, 'Description length have to be 30 chars at maximum']
+            // maxLength: [100, 'Description length have to be 100 chars at maximum']
         },
         category: {
             type: String,

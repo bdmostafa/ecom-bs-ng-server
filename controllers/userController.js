@@ -147,28 +147,32 @@ module.exports.deleteUserBySuperAdminController = async (req, res, next) => {
   const loggedInUserId = req.user?._id;
   if(!loggedInUserId) return res.status(404).send("User ID Not Found");
 
-  const userInputValue = req.body;
+  // const userInputValue = req.body;
 
   // validation update operation and inputData
-  const keysInput = Object.keys(userInputValue);
-  const allowedForUpdates = ["userId"];
+  // const keysInput = Object.keys(userInputValue);
+  // const allowedForUpdates = ["userId"];
 
   // Check if any extra invalid field out of allowedForUpdates is requested or not
-  const isAllowed = keysInput.every((update) =>
-    allowedForUpdates.includes(update)
-  );
-  if (!isAllowed) return res.status(400).send("Invalid Update Operation.");
+  // const isAllowed = keysInput.every((update) =>
+  //   allowedForUpdates.includes(update)
+  // );
+  // if (!isAllowed) return res.status(400).send("Invalid Update Operation.");
+  // const userIdToDelete = userInputValue.userId
+
+  // Pick only valid field
+  const { userId } = _.pick(req.body, ["userId"])
 
   // Dealing with errors on express-validator
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).send(errors.array());
-
+console.log(_.pick(req.body, ["userId"]))
   // Delete user from server
-  const userIdToDelete = userInputValue.userId
   try {
-    const user = await User.findOneAndDelete({
-      _id: userIdToDelete,
-    });
+    // const user = await User.findOneAndDelete({
+    //   _id: userIdToDelete,
+    // });
+    const user = await User.findByIdAndDelete(userId);
 
     if (!user) return res.status(404).send("User Not Found");
     res.send(user);

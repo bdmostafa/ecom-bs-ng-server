@@ -1,4 +1,13 @@
+// Dependencies
 const express = require('express');
+const router = express.Router();
+const { check } = require('express-validator');
+
+// Middleware
+const { auth } = require('../middleware/auth');
+const { admin } = require('../middleware/admin');
+const { superAdmin } = require('../middleware/superAdmin');
+const { adminOrSuperAdmin } = require('../middleware/adminOrSuperAdmin');
 const { 
     getOrdersController, 
     getOrderController,
@@ -7,13 +16,6 @@ const {
     createOrderController,
     updateOrderController
 } = require('../controllers/orderController');
-
-const router = express.Router();
-const { auth } = require('../middleware/auth');
-const { admin } = require('../middleware/admin');
-const { superAdmin } = require('../middleware/superAdmin');
-const { adminOrSuperAdmin } = require('../middleware/adminOrSuperAdmin');
-const { check } = require('express-validator');
 
 // Getting all orders (authorization for only superAdmin)
 router.get(
@@ -25,7 +27,7 @@ router.get(
     getOrdersController
 );
 
-// getting single order by Id (authorization for admin and superAdmin)
+// Getting single order by Id (authorization for admin and superAdmin)
 router.get(
     '/:orderId',
     [
@@ -36,7 +38,7 @@ router.get(
     getOrderController
 );
 
-// getting pending orders (authorization for admin and superAdmin)
+// Getting pending orders (authorization for admin and superAdmin)
 router.get(
     '/pending-orders',
     [
@@ -54,9 +56,10 @@ router.get(
         auth, 
         superAdmin
     ],
-    getOrdersByDateController);
+    getOrdersByDateController
+);
 
-// Create new order (authentication for user)
+// Create new order (authentication for user only)
 router.post(
     '/create',
     [
@@ -66,14 +69,15 @@ router.post(
             .notEmpty(),
         check('quantity', 'Quantity is required.').notEmpty()
     ],
-    createOrderController)
+    createOrderController
+);
 
 // Update order status (authorization for admin and super admin)
 router.patch(
     '/update/:orderId',
     [
         auth,
-        adminOrSuperAdmin,
+        admin,
         check('orderId', 'Order Not Found. Id is not valid').isMongoId(),
         check('status', 'Status is required.').notEmpty()
     ],
