@@ -1,4 +1,6 @@
+// Dependencies
 const { validationResult } = require("express-validator");
+const axios = require("axios");
 
 //Models
 const Product = require("../models/products");
@@ -27,6 +29,19 @@ module.exports.getProductsController = async (req, res) => {
     res.send(products);
   } catch (err) {
     res.status(500).send(err);;
+  }
+};
+
+module.exports.generateProductsController = async (req, res) => {
+  try {
+    const response = await axios.get(process.env.PRODUCT_URL);
+    if(!response) return res.status(404).send("Response data is not available");
+
+    const products = await Product.insertMany(response.data, "-id");
+    res.send(products);
+  
+  } catch (err) {
+    res.status(500).send(err);
   }
 };
 

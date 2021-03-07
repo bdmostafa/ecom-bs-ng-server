@@ -3,7 +3,8 @@ const {
     getProductsController, 
     getProductByIdController, 
     addProductController,
-    updateProductsController
+    updateProductsController,
+    generateProductsController
 } = require('../controllers/productController');
 
 const router = express.Router();
@@ -11,9 +12,20 @@ const { auth } = require('../middleware/auth');
 const { admin } = require('../middleware/admin');
 const { adminOrSuperAdmin } = require('../middleware/adminOrSuperAdmin');
 const { check } = require('express-validator');
+const { superAdmin } = require('../middleware/superAdmin');
 
 // Getting all product (user authentication requirement only)
 router.get('/', auth, getProductsController);
+
+// Generating products from third party API (authorization for only super admin)
+router.get(
+    '/generate-products',
+    [
+        auth,
+        superAdmin
+    ],
+    generateProductsController
+);
 
 // getting single product by Id (user authentication requirement only)
 router.get(

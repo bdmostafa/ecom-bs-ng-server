@@ -20,14 +20,6 @@ const OrdersSchema = new Schema(
             type: Number,
             required: [true, 'Order quantity is required'],
         },
-        // unitPrice: {
-        //     type: Number,
-        //     required: [true, 'Unit Price is required'],
-        // },
-        // totalPrice: {
-        //     type: Number,
-        //     required: [true, 'Total price is required'],
-        // },
         date: {
             type: Date,
             required: [true, 'Order date is required'],

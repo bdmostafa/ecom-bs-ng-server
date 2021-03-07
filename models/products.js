@@ -4,10 +4,6 @@ const Schema = mongoose.Schema;
 
 const ProductsSchema = new Schema(
     {
-        // _id: {
-        //     type: Schema.Types.ObjectId,
-        //     required: true
-        // },
         title: {
             type: String,
             required: [true, 'Product Name / Title is required'],
@@ -32,7 +28,7 @@ const ProductsSchema = new Schema(
             type: Buffer,
             required: [true, 'Image is required'],
         },
-        
+
     },
     {
         timestamps: true
