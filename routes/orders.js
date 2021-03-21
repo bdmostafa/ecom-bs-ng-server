@@ -72,7 +72,7 @@ router.post(
     createOrderController
 );
 
-// Update order status (authorization for admin and super admin)
+// Update order status (authorization for admin only)
 router.patch(
     '/update/:orderId',
     [

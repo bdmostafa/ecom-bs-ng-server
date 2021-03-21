@@ -14,6 +14,9 @@ const ordersRouter = require('./routes/orders');
 // Import DB
 const { connectDB } = require('./db/dbConnection');
 
+// Import error middleware
+const { error } = require('./middleware/error');
+
 // Config
 require('dotenv').config({
   path: './config/keys.env'
@@ -39,6 +42,7 @@ app.use('/users', usersRouter);
 app.use('/products', productsRouter);
 app.use('/orders', ordersRouter);
 app.use('/', indexRouter);
+app.use(error);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
