@@ -30,7 +30,7 @@ router.get(
 
 // Adding new user
 router.post(
-    '/',
+    '/create',
     [
         check('name', 'Name is required').notEmpty(),
         check('email', 'Email is required').notEmpty(),
@@ -51,7 +51,7 @@ router.post(
 
 // Update user data
 router.patch(
-    '/me',
+    '/update/me',
     [
         auth,
         check('name', 'Name is required')
@@ -85,12 +85,12 @@ router.patch(
 
 // Delete user by logged in user
 router.delete(
-    '/me',
+    '/update/me',
     auth,
     deleteUserController
 )
 
-// Delete user (authorization for superAdmin)
+// Delete users (authorization for superAdmin)
 router.delete(
     '/delete',
     [

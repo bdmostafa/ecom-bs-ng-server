@@ -17,8 +17,12 @@ const {
     deleteProductController
 } = require('../controllers/productController');
 
-// Getting all product (user authentication requirement only)
-router.get('/', auth, getProductsController);
+// Getting all product (with no authentication)
+router.get(
+    '/', 
+    // auth, // when user authentication requirement only
+    getProductsController
+);
 
 // Generating products from third party API (authorization for only super admin)
 router.get(

@@ -25,7 +25,7 @@ const ProductsSchema = new Schema(
             minLength: [3, 'Title must have 3 chars at least']
         },
         image: {
-            type: Buffer,
+            type: String,
             required: [true, 'Image is required'],
         },
 

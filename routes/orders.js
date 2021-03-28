@@ -27,17 +27,6 @@ router.get(
     getOrdersController
 );
 
-// Getting single order by Id (authorization for admin and superAdmin)
-router.get(
-    '/:orderId',
-    [
-        check('orderId', 'Order Not Found. Id is not valid').isMongoId(),
-        auth,
-        adminOrSuperAdmin
-    ],
-    getOrderController
-);
-
 // Getting pending orders (authorization for admin and superAdmin)
 router.get(
     '/pending-orders',
@@ -70,6 +59,17 @@ router.post(
         check('quantity', 'Quantity is required.').notEmpty()
     ],
     createOrderController
+);
+
+// Getting single order by Id (authorization for admin and superAdmin)
+router.get(
+    '/:orderId',
+    [
+        check('orderId', 'Order Not Found. Id is not valid').isMongoId(),
+        auth,
+        adminOrSuperAdmin
+    ],
+    getOrderController
 );
 
 // Update order status (authorization for admin only)

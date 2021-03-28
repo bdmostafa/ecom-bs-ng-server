@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const cors = require('cors');
 
 // Import routes
 const indexRouter = require('./routes/index');
@@ -28,6 +29,10 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+// handle cors policy 
+// app.use(cors());
+app.use(cors({ origin:true, credentials:true }));
+
 // Middleware
 app.use(logger('dev'));
 app.use(express.json());
@@ -44,8 +49,12 @@ app.use('/orders', ordersRouter);
 app.use('/', indexRouter);
 app.use(error);
 
-// catch 404 and forward to error handler
+// prevent CORS problem and catch 404 then forward to error handler
 app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token, Authorization, x-auth-token');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+  res.header('Access-Control-Allow-Credentials', true);
   next(createError(404));
 });
 

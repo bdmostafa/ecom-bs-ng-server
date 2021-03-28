@@ -39,7 +39,7 @@ module.exports.addUserController = async (req, res) => {
     });
 
   } catch (err) {
-    res.status(500).send("err");
+    res.status(500).send(err);
   }
 };
 
@@ -145,7 +145,7 @@ module.exports.deleteUserController = async (req, res, next) => {
 
 module.exports.deleteUserBySuperAdminController = async (req, res, next) => {
   const loggedInUserId = req.user?._id;
-  if(!loggedInUserId) return res.status(404).send("User ID Not Found");
+  if(!loggedInUserId) return res.status(404).send("LoggedIn User ID Not Found");
 
   // const userInputValue = req.body;
 
@@ -205,7 +205,7 @@ module.exports.loginController = async (req, res) => {
       httpOnly: true,
       sameSite: true,
       signed: true,
-      maxAge: 4 * 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     // Successfully LoggedIn
