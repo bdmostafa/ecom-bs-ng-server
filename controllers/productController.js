@@ -1,6 +1,7 @@
 // Dependencies
 const { validationResult } = require("express-validator");
 const axios = require("axios");
+const _ = require("lodash");
 
 //Models
 const Product = require("../models/products");

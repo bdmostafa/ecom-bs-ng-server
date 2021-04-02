@@ -202,14 +202,21 @@ module.exports.loginController = async (req, res) => {
 
     // Send token as cookie
     res.cookie("auth", token, {
-      httpOnly: true,
+      // httpOnly: true,
       sameSite: true,
       signed: true,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 4 * 60 * 60 * 1000,
     });
 
-    // Successfully LoggedIn
-    res.send("LoggedIn Successfully!");
+    // Successfully LoggedIn and send only 3 fields
+    const userData = {
+      role: user.role, 
+      name: user.name, 
+      email: user.email,
+      msg: 'Successfully LoggedIn'
+    };
+
+    res.send(userData);
 
   } catch (err) {
     console.log(err)
@@ -218,6 +225,7 @@ module.exports.loginController = async (req, res) => {
 };
 
 module.exports.logoutController = async (req, res) => {
+  console.log('ok')
   res.clearCookie("auth");
   res.send("Successfully logout");
 };

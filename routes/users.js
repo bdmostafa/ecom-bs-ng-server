@@ -85,7 +85,7 @@ router.patch(
 
 // Delete user by logged in user
 router.delete(
-    '/update/me',
+    '/delete/me',
     auth,
     deleteUserController
 )
