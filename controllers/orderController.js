@@ -11,23 +11,29 @@ module.exports.createOrderController = async (req, res) => {
     if (!errors.isEmpty()) return res.status(400).send(errors.array());
 
     // Pick only valid fields by lodash module
-    const pickedProperty = _.pick(req.body, [
-        "product",
-        "quantity"
-    ]);
+    // const pickedProperty = _.pick(req.body, [
+    //     "product",
+    //     "quantity"
+    // ]);
+    const pickedProperty = _.map(req.body, _.partialRight(_.pick, ['product', 'quantity']));
 
     // If valid, then execute to add customer (logged in user) then create a new order 
     try {
-        // Collecting the order valid inputData and creating an object as order
-        const newOrder = new Order({
-            ...pickedProperty,
-            customer: req.user._id
-        });
-        if (!newOrder) return res.status(400).send("Invalid Update Operation.");
+        // After Collecting the order valid inputData, create an array of object as orders
+        const orders = [];
+        await pickedProperty.map(order => {
+            const newOrder = new Order({
+                ...order,
+                customer: req.user._id
+            });
 
-        await newOrder.save();
+            if (!newOrder) return res.status(400).send("Invalid Update Operation.");
 
-        res.send(newOrder);
+            newOrder.save();
+            orders.push(newOrder);
+        });        
+
+        res.send(orders);
 
     } catch (err) {
         res.status(500).send(err);;
@@ -56,7 +62,43 @@ module.exports.getOrdersController = async (req, res) => {
                 customer: order.customer,
                 product: order.product,
                 quantity: order.quantity,
-                totalPrice: parseInt(order.quantity * order.product.price).toFixed(2),
+                totalPrice: parseFloat(order.quantity * order.product?.price).toFixed(2),
+                createdAt: order.createdAt,
+                updatedAt: order.updatedAt
+            }
+            updatedOrderWithTotalPrice.push(orderObj);
+        })
+
+        res.send(updatedOrderWithTotalPrice);
+        // res.send(orders);
+    } catch (err) {
+        res.status(500).send(err.message);;
+    }
+};
+
+module.exports.getUsersOrdersController = async (req, res) => {
+    const id = req.user._id;
+
+    // Getting all orders of loggedInUser with populating product model
+    try {
+        const orders = await Order.find({ 
+            customer: id 
+        })
+            .populate(
+                'product',
+                '_id title price category'
+            );
+           
+        const updatedOrderWithTotalPrice = [];
+        orders?.map(order => {
+            const orderObj = {
+                _id: order._id,
+                // date: order.date,
+                status: order.status,
+                customer: order.customer,
+                product: order.product,
+                quantity: order.quantity,
+                totalPrice: parseFloat(order.quantity * order.product?.price).toFixed(2),
                 createdAt: order.createdAt,
                 updatedAt: order.updatedAt
             }
@@ -71,8 +113,6 @@ module.exports.getOrdersController = async (req, res) => {
 };
 
 module.exports.getPendingOrdersController = async (req, res) => {
-    // console.log('goes here... pending', req)
-    // Getting all pending orders from server
     try {
         const pendingOrders = await Order.find({ 
             status: "pending" 
@@ -167,7 +207,7 @@ module.exports.getOrdersByDateController = async (req, res) => {
 module.exports.updateOrderController = async (req, res) => {
     const id = req.params.productId;
     const orderInputValue = req.body;
-
+console.log(id, orderInputValue)
     // validation update operation and inputData
     const keysInput = Object.keys(orderInputValue);
     const allowedForUpdates = ["status"];

@@ -1,7 +1,7 @@
 // Dependencies
 const express = require('express');
 const router = express.Router();
-const { check } = require('express-validator');
+const { check, body } = require('express-validator');
 
 // Middleware
 const { auth } = require('../middleware/auth');
@@ -14,7 +14,8 @@ const {
     getPendingOrdersController, 
     getOrdersByDateController,
     createOrderController,
-    updateOrderController
+    updateOrderController,
+    getUsersOrdersController
 } = require('../controllers/orderController');
 
 // Getting all orders (authorization for only superAdmin)
@@ -53,10 +54,18 @@ router.post(
     '/create',
     [
         auth,
-        check('product', 'Product Id is required.')
+        body()
+            .isArray()
+            .notEmpty(),
+        body('*.product', 'Product Id is required.')
             .isMongoId()
             .notEmpty(),
-        check('quantity', 'Quantity is required.').notEmpty()
+        body('*.quantity', 'Quantity Id is required.')
+            .notEmpty(),
+        // check('product', 'Product Id is required.')
+        //     .isMongoId()
+        //     .notEmpty(),
+        // check('quantity', 'Quantity is required.').notEmpty()
     ],
     createOrderController
 );
@@ -70,6 +79,13 @@ router.get(
         adminOrSuperAdmin
     ],
     getOrderController
+);
+
+// Getting orders by LoggedInUser (authentication for user)
+router.get(
+    '/user/my-orders',
+    auth,
+    getUsersOrdersController
 );
 
 // Update order status (authorization for admin only)

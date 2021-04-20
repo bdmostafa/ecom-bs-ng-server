@@ -39,7 +39,7 @@ router.get(
     '/:productId',
     [
         check('productId', 'Product Not Found. Id is not valid').isMongoId(),
-        auth
+        // auth
     ],
     getProductByIdController
 )

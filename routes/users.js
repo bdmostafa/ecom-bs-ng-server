@@ -15,9 +15,10 @@ const { auth } = require('../middleware/auth');
 const { admin } = require('../middleware/admin');
 const { superAdmin } = require('../middleware/superAdmin');
 const { check } = require('express-validator');
+const { adminOrSuperAdmin } = require('../middleware/adminOrSuperAdmin');
 
 // Getting all users
-router.get('/', [auth, admin], getUsersController);
+router.get('/', [auth, adminOrSuperAdmin], getUsersController);
 
 // getting single user
 router.get(
