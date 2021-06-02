@@ -15,7 +15,8 @@ const {
     getOrdersByDateController,
     createOrderController,
     updateOrderController,
-    getUsersOrdersController
+    getUsersOrdersController,
+    orderPaymentController
 } = require('../controllers/orderController');
 
 // Getting all orders (authorization for only superAdmin)
@@ -48,20 +49,26 @@ router.get(
     ],
     getOrdersByDateController
 );
+// Payment Gateway
+router.post(
+    '/payment', 
+    // auth, 
+    orderPaymentController
+);
 
 // Create new order (authentication for user only)
 router.post(
     '/create',
     [
-        auth,
+        // auth,
         body()
             .isArray()
             .notEmpty(),
-        body('*.product', 'Product Id is required.')
-            .isMongoId()
-            .notEmpty(),
-        body('*.quantity', 'Quantity Id is required.')
-            .notEmpty(),
+        // body('*.product', 'Product Id is required.')
+        //     .isMongoId()
+        //     .notEmpty(),
+        // body('*.quantity', 'Quantity is required.')
+        //     .notEmpty(),
         // check('product', 'Product Id is required.')
         //     .isMongoId()
         //     .notEmpty(),
@@ -75,8 +82,8 @@ router.get(
     '/:orderId',
     [
         check('orderId', 'Order Not Found. Id is not valid').isMongoId(),
-        auth,
-        adminOrSuperAdmin
+        // auth,
+        // adminOrSuperAdmin
     ],
     getOrderController
 );

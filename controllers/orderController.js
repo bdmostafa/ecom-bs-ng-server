@@ -5,6 +5,12 @@ const _ = require("lodash");
 //Models
 const Order = require("../models/orders");
 
+module.exports.orderPaymentController = async (req, res) => {
+    setTimeout(() => {
+        res.status(200).json({success: true});
+    }, 3000)
+};
+
 module.exports.createOrderController = async (req, res) => {
     // Firstly check on validation
     const errors = validationResult(req);
@@ -20,23 +26,28 @@ module.exports.createOrderController = async (req, res) => {
     // If valid, then execute to add customer (logged in user) then create a new order 
     try {
         // After Collecting the order valid inputData, create an array of object as orders
-        const orders = [];
-        await pickedProperty.map(order => {
-            const newOrder = new Order({
-                ...order,
-                customer: req.user._id
-            });
+        // const orders = [];
+        // await pickedProperty.map(order => {
+        //     const newOrder = new Order({
+        //         ...order,
+        //         // customer: req.user._id
+        //         customer: "60438d8351c19b1588988783"
+        //     });
 
-            if (!newOrder) return res.status(400).send("Invalid Update Operation.");
+        //     if (!newOrder) return res.status(400).send("Invalid Update Operation.");
 
-            newOrder.save();
-            orders.push(newOrder);
-        });        
+        //     newOrder.save();
+        //     orders.push(newOrder);
+        // });  
+        // res.send(orders);    
 
-        res.send(orders);
+        const newOrder = new Order({productOrdered: pickedProperty, customer: "60438d8351c19b1588988783"})
+        await newOrder.save();
+        res.send(newOrder);
 
     } catch (err) {
-        res.status(500).send(err);;
+        console.error(err)
+        res.status(500).send(err);
     }
 };
 
@@ -153,21 +164,24 @@ module.exports.getOrderController = async (req, res) => {
 
         if (!order) return res.status(404).send("Order Not Exists");
 
-        const updatedOrderWithTotalPrice = {
-            _id: order._id,
-            // date: order.date,
-            status: order.status,
-            customer: order.customer,
-            product: order.product,
-            quantity: order.quantity,
-            totalPrice: Number(parseFloat(order.quantity * order.product.price).toFixed(2)),
-            createdAt: order.createdAt,
-            updatedAt: order.updatedAt
-        };
+        // const updatedOrderWithTotalPrice = {
+        //     _id: order._id,
+        //     // date: order.date,
+        //     status: order.status,
+        //     customer: order.customer,
+        //     product: order.product,
+        //     quantity: order.quantity,
+        //     totalPrice: Number(parseFloat(order.quantity * order.product.price).toFixed(2)),
+        //     createdAt: order.createdAt,
+        //     updatedAt: order.updatedAt
+        // };
 
-        res.send(updatedOrderWithTotalPrice);
+        // res.send(updatedOrderWithTotalPrice);
+        console.log(order)
+        res.send(order);
 
     } catch (err) {
+        console.error(err)
         res.status(500).send(err);
     }
 };
