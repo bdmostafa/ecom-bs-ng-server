@@ -14,7 +14,8 @@ const {
     addProductController,
     updateProductsController,
     generateProductsController,
-    deleteProductController
+    deleteProductController,
+    getProductsByCategoryController
 } = require('../controllers/productController');
 
 // Getting all product (with no authentication)
@@ -42,6 +43,16 @@ router.get(
         // auth
     ],
     getProductByIdController
+)
+
+// Getting products by Category
+router.get(
+    '/category/:categoryName',
+    [
+        check('categoryName', 'Category Name is required as params').notEmpty(),
+        // auth
+    ],
+    getProductsByCategoryController
 )
 
 // Adding new product (authorization for admin and super admin)

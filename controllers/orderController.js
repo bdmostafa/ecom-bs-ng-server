@@ -158,10 +158,10 @@ module.exports.getOrderController = async (req, res) => {
                 '_id name email'
             )
             .populate(
-                'product',
-                '_id title price category'
-            );
-
+                'productOrdered productOrdered.product',
+                '_id title price description image category'
+            )
+            
         if (!order) return res.status(404).send("Order Not Exists");
 
         // const updatedOrderWithTotalPrice = {
@@ -177,7 +177,6 @@ module.exports.getOrderController = async (req, res) => {
         // };
 
         // res.send(updatedOrderWithTotalPrice);
-        console.log(order)
         res.send(order);
 
     } catch (err) {

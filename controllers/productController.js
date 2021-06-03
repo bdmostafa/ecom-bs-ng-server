@@ -76,6 +76,26 @@ module.exports.getProductByIdController = async (req, res) => {
   }
 };
 
+module.exports.getProductsByCategoryController = async (req, res) => {
+  const category = req.params.categoryName;
+
+  // Check on validationResult
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(404).send("Category Name Not Found");
+
+  // Getting product by ID from server
+  try {
+    const product = await Product.find({category});
+
+    if (!product) return res.status(404).send("Product Not Found");
+
+    res.send(product);
+
+  } catch (err) {
+    res.status(500).send(err);;
+  }
+};
+
 module.exports.deleteProductController = async (req, res) => {
   const id = req.params.productId;
   
