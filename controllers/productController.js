@@ -17,7 +17,8 @@ module.exports.addProductController = async (req, res) => {
     "price",
     "description",
     "category",
-    "image"
+    "image",
+    "quantity"
   ]);
 
   // If valid, then execute to add a new product

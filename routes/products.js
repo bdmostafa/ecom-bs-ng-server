@@ -67,7 +67,8 @@ router.post(
             .optional()
             .notEmpty(),
         check('category', 'Category is required.').notEmpty(),
-        check('image', 'Image is required.').notEmpty()
+        check('image', 'Image is required.').notEmpty(),
+        check('quantity', 'Quantity is required.').notEmpty(),
     ],
     addProductController
 );

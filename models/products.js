@@ -28,6 +28,10 @@ const ProductsSchema = new Schema(
             type: String,
             required: [true, 'Image is required'],
         },
+        quantity: {
+            type: Number,
+            required: [true, 'Quantity is required'],
+        },
 
     },
     {
