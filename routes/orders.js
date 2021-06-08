@@ -64,11 +64,11 @@ router.post(
         body()
             .isArray()
             .notEmpty(),
-        // body('*.product', 'Product Id is required.')
-        //     .isMongoId()
-        //     .notEmpty(),
-        // body('*.quantity', 'Quantity is required.')
-        //     .notEmpty(),
+        body('*.product', 'Product Id is required.')
+            .isMongoId()
+            .notEmpty(),
+        body('*.quantity', 'Quantity is required.')
+            .notEmpty(),
         // check('product', 'Product Id is required.')
         //     .isMongoId()
         //     .notEmpty(),

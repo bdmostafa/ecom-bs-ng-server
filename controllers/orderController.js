@@ -22,7 +22,7 @@ module.exports.createOrderController = async (req, res) => {
     //     "quantity"
     // ]);
     const pickedProperty = _.map(req.body, _.partialRight(_.pick, ['product', 'quantity']));
-
+console.log(req?.user?._id)
     // If valid, then execute to add customer (logged in user) then create a new order 
     try {
         // After Collecting the order valid inputData, create an array of object as orders
@@ -60,28 +60,28 @@ module.exports.getOrdersController = async (req, res) => {
                 '_id name email'
             )
             .populate(
-                'product',
-                '_id title price category'
+                'productOrdered productOrdered.product',
+                '_id title price description image category'
             );
 
-        const updatedOrderWithTotalPrice = [];
-        orders?.map(order => {
-            const orderObj = {
-                _id: order._id,
-                // date: order.date,
-                status: order.status,
-                customer: order.customer,
-                product: order.product,
-                quantity: order.quantity,
-                totalPrice: parseFloat(order.quantity * order.product?.price).toFixed(2),
-                createdAt: order.createdAt,
-                updatedAt: order.updatedAt
-            }
-            updatedOrderWithTotalPrice.push(orderObj);
-        })
+        // const updatedOrderWithTotalPrice = [];
+        // orders?.map(order => {
+        //     const orderObj = {
+        //         _id: order._id,
+        //         // date: order.date,
+        //         status: order.status,
+        //         customer: order.customer,
+        //         product: order.product,
+        //         quantity: order.quantity,
+        //         totalPrice: parseFloat(order.quantity * order.product?.price).toFixed(2),
+        //         createdAt: order.createdAt,
+        //         updatedAt: order.updatedAt
+        //     }
+        //     updatedOrderWithTotalPrice.push(orderObj);
+        // })
 
-        res.send(updatedOrderWithTotalPrice);
-        // res.send(orders);
+        // res.send(updatedOrderWithTotalPrice);
+        res.send(orders);
     } catch (err) {
         res.status(500).send(err.message);;
     }
@@ -96,28 +96,28 @@ module.exports.getUsersOrdersController = async (req, res) => {
             customer: id 
         })
             .populate(
-                'product',
-                '_id title price category'
+                'productOrdered productOrdered.product',
+                '_id title price description image category'
             );
            
-        const updatedOrderWithTotalPrice = [];
-        orders?.map(order => {
-            const orderObj = {
-                _id: order._id,
-                // date: order.date,
-                status: order.status,
-                customer: order.customer,
-                product: order.product,
-                quantity: order.quantity,
-                totalPrice: parseFloat(order.quantity * order.product?.price).toFixed(2),
-                createdAt: order.createdAt,
-                updatedAt: order.updatedAt
-            }
-            updatedOrderWithTotalPrice.push(orderObj);
-        })
+        // const updatedOrderWithTotalPrice = [];
+        // orders?.map(order => {
+        //     const orderObj = {
+        //         _id: order._id,
+        //         // date: order.date,
+        //         status: order.status,
+        //         customer: order.customer,
+        //         product: order.product,
+        //         quantity: order.quantity,
+        //         totalPrice: parseFloat(order.quantity * order.product?.price).toFixed(2),
+        //         createdAt: order.createdAt,
+        //         updatedAt: order.updatedAt
+        //     }
+        //     updatedOrderWithTotalPrice.push(orderObj);
+        // })
 
-        res.send(updatedOrderWithTotalPrice);
-        // res.send(orders);
+        // res.send(updatedOrderWithTotalPrice);
+        res.send(orders);
     } catch (err) {
         res.status(500).send(err);;
     }
@@ -133,8 +133,8 @@ module.exports.getPendingOrdersController = async (req, res) => {
                 '_id name email'
             )
             .populate(
-                'product',
-                '_id title price category'
+                'productOrdered productOrdered.product',
+                '_id title price description image category'
             );
 
         // When pending order is empty
@@ -204,8 +204,8 @@ module.exports.getOrdersByDateController = async (req, res) => {
                 '_id name email'
             )
             .populate(
-                'product',
-                '_id title price category'
+                'productOrdered productOrdered.product',
+                '_id title price description image category'
             );
 
         if (ordersPerDay.length === 0) res.send(`Oops...! Order of ${date} is empty now.`);

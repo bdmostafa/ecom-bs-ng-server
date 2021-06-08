@@ -6,4 +6,4 @@
 - Express
 - MongoDB
 - Mongoose
-- React
+- Angular
