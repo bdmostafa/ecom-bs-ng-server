@@ -4,6 +4,7 @@ const {
     getUserController, 
     addUserController,
     updateUserController, 
+    updateUserBySuperAdminController,
     logoutController, 
     loginController, 
     deleteUserController,
@@ -18,7 +19,13 @@ const { check } = require('express-validator');
 const { adminOrSuperAdmin } = require('../middleware/adminOrSuperAdmin');
 
 // Getting all users
-router.get('/', [auth, adminOrSuperAdmin], getUsersController);
+router.get('/',
+    [
+        auth, 
+        adminOrSuperAdmin
+    ], 
+    getUsersController
+);
 
 // getting single user
 router.get(
@@ -36,6 +43,7 @@ router.post(
         check('name', 'Name is required').notEmpty(),
         check('email', 'Email is required').notEmpty(),
         check('email', 'Email must be valid').isEmail(),
+        check("role", "Role is required.").notEmpty(),
         check('password', 'Password is required').notEmpty(),
         check('password', 'Password must be at least 6 characters').isLength({ min: 6 }),
         check('confirmPassword', 'ConfirmPassword is required').notEmpty(),
@@ -50,8 +58,8 @@ router.post(
     ],
     addUserController)
 
-// Update user data
-router.patch(
+// Update user data by loggedIn user
+router.put(
     '/update/me',
     [
         auth,
@@ -84,6 +92,44 @@ router.patch(
     updateUserController
 )
 
+// Update user data by Super Admin
+router.put(
+    '/update/:userId',
+    [
+        auth,
+        superAdmin,
+        check('name', 'Name is required')
+            .optional()
+            .notEmpty(),
+        check('email', 'Email is required')
+            .optional()
+            .notEmpty(),
+        check('email', 'Email must be valid')
+            .isEmail()
+            .optional()
+            .notEmpty(),
+        check('password', 'Password is required')
+            .optional()
+            .notEmpty(),
+        check('password', 'Password must be at least 6 characters, one capital, one small and one symbol').isLength({ min: 6 }),
+        check('confirmPassword', 'ConfirmPassword is required')
+            .optional()
+            .notEmpty(),
+        // custom validation
+        check('confirmPassword').custom((value, { req }) => {
+            if (value !== req.body.password) {
+                throw new Error('Confirm password doesn\'t match')
+            } else {
+                return true
+            }
+        }),
+        check("role", "Role is required.")
+            .optional()
+            .notEmpty(),
+    ],
+    updateUserBySuperAdminController
+)
+
 // Delete user by logged in user
 router.delete(
     '/delete/me',
@@ -93,13 +139,12 @@ router.delete(
 
 // Delete users (authorization for superAdmin)
 router.delete(
-    '/delete',
+    '/delete/:userId',
     [
         auth,
         superAdmin,
         check('userId', 'User ID not found.')
             .isMongoId()
-            .notEmpty(),
     ],
     deleteUserBySuperAdminController
 )

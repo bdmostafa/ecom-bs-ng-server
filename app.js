@@ -52,6 +52,7 @@ app.use(error);
 // prevent CORS problem and catch 404 then forward to error handler
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
+  // res.header('Access-Control-Expose-Headers', 'Set-Cookie, x-auth-token');
   res.header('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token, Authorization, x-auth-token');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
   res.header('Access-Control-Allow-Credentials', true);

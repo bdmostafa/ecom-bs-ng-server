@@ -1,13 +1,15 @@
 // Dependencies
 const { validationResult } = require("express-validator");
 const _ = require("lodash");
+const endOfDay = require('date-fns/endOfDay')
+const startOfDay = require('date-fns/startOfDay')
 
 //Models
 const Order = require("../models/orders");
 
 module.exports.orderPaymentController = async (req, res) => {
     setTimeout(() => {
-        res.status(200).json({success: true});
+        return res.status(200).json({success: true});
     }, 3000)
 };
 
@@ -41,13 +43,20 @@ console.log(req?.user?._id)
         // });  
         // res.send(orders);    
 
-        const newOrder = new Order({productOrdered: pickedProperty, customer: "60438d8351c19b1588988783"})
+        const newOrder = new Order({productOrdered: pickedProperty, customer:  req.user._id})
         await newOrder.save();
-        res.send(newOrder);
+
+        return res.status(200).send({
+            order: newOrder,
+            success: {
+                title: 'Order Status',
+                message: 'Your order has been placed successfully'
+            }
+        });
 
     } catch (err) {
         console.error(err)
-        res.status(500).send(err);
+        return res.status(500).send(err);
     }
 };
 
@@ -81,9 +90,30 @@ module.exports.getOrdersController = async (req, res) => {
         // })
 
         // res.send(updatedOrderWithTotalPrice);
-        res.send(orders);
+
+        // When orders are empty
+        const resEmptyMsg = {
+            orders: [],
+            success: {
+              title: 'All Orders',
+              message: 'Oops... There is no order right now.'
+            }
+        }
+
+        if (orders.length === 0) return res.status(200).send(resEmptyMsg);
+
+        const resData = {
+            orders,
+            success: {
+              title: 'All Orders',
+              message: `The the orders have been loaded successfully.`
+          }
+        }
+
+        return res.status(200).send(resData);
+
     } catch (err) {
-        res.status(500).send(err.message);;
+        return res.status(500).send(err.message);;
     }
 };
 
@@ -117,16 +147,36 @@ module.exports.getUsersOrdersController = async (req, res) => {
         // })
 
         // res.send(updatedOrderWithTotalPrice);
-        res.send(orders);
+
+        // When orders are empty
+        const emptyMsg = {
+            success: {
+                title: 'User Orders',
+                message: `The order of the user ${req?.user?.name} is empty now.`
+            }
+        }
+
+        if (orders.length === 0) return res.status(200).send(emptyMsg);
+        
+        const resData = {
+            orders,
+            success: {
+              title: 'User Orders',
+              message: `The orders of the user ${req?.user?.name} have been loaded successfully.`
+          }
+        }
+
+        return res.status(200).send(resData);
+
     } catch (err) {
-        res.status(500).send(err);;
+        return res.status(500).send(err);;
     }
 };
 
 module.exports.getPendingOrdersController = async (req, res) => {
     try {
         const pendingOrders = await Order.find({ 
-            status: "pending" 
+            status: "Pending"
         })
             .populate(
                 'customer',
@@ -138,17 +188,37 @@ module.exports.getPendingOrdersController = async (req, res) => {
             );
 
         // When pending order is empty
-        if(pendingOrders.length === 0) res.send("Oops... Pending orders are empty now.");
+        const resEmptyMsg = {
+            orders: [],
+            success: {
+              title: 'Pending Orders',
+              message: 'Oops... Pending orders are empty now.'
+            }
+        }
+       
+        if(pendingOrders.length === 0) return res.status(200).send(resEmptyMsg);
 
-        res.send(pendingOrders);
+        const resData = {
+            orders: pendingOrders,
+            success: {
+              title: 'Pending Orders',
+              message: `The pending orders have been loaded successfully.`
+          }
+        }
+
+        return res.status(200).send(resData);
 
     } catch (err) {
-        res.status(500).send(err);
+        return res.status(500).send(err);
     }
 };
 
 module.exports.getOrderController = async (req, res) => {
     const id = req.params.orderId;
+
+    // Firstly check on validation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).send(errors.array());
 
     // Populating customer and product model and get order data with them
     try {
@@ -177,28 +247,41 @@ module.exports.getOrderController = async (req, res) => {
         // };
 
         // res.send(updatedOrderWithTotalPrice);
-        res.send(order);
+
+        const resData = {
+            order,
+            success: {
+              title: 'Order By Id',
+              message: `The order ${order._id} has been loaded successfully.`
+          }
+        }
+
+        return res.status(200).send(resData);
 
     } catch (err) {
-        console.error(err)
-        res.status(500).send(err);
+        // console.error(err)
+        return res.status(500).send(err);
     }
 };
 
 module.exports.getOrdersByDateController = async (req, res) => {
-    // console.log('goes here... by date')
+    const date = req.params.date;
     // Check on validation
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).send(errors.array());
 
     // Pick only date field by lodash module
-    const { date } = _.pick(req.body, ["date"]);
+    // const { date } = _.pick(req.body, ["date"]);
 
     // Getting all orders per day
     try {
         const ordersPerDay = await Order.find({
-            date
-        })
+            // Using date-fns npm, whole day range of a specific date 
+            date: {
+                $gte: startOfDay(new Date(date)),
+                $lte: endOfDay(new Date(date))
+              }
+            })
             .populate(
                 'customer',
                 '_id name email'
@@ -208,19 +291,37 @@ module.exports.getOrdersByDateController = async (req, res) => {
                 '_id title price description image category'
             );
 
-        if (ordersPerDay.length === 0) res.send(`Oops...! Order of ${date} is empty now.`);
+        const resEmptyMsg = {
+            orders: [],
+            success: {
+                title: 'Orders By Date',
+                message: `Oops...! Order not found. Orders of ${date} is empty now.`
+            }
+        }
+            
+        if (ordersPerDay.length === 0) {
+            return res.status(200).send(resEmptyMsg);
+        }
 
-        res.send(ordersPerDay);
+        const resData = {
+            orders: ordersPerDay,
+            success: {
+              title: 'Orders By date',
+              message: `The orders of ${date} has been loaded successfully.`
+          }
+        }
+
+        return res.status(200).send(resData);
 
     } catch (err) {
-        res.status(500).send(err);
+        return res.status(500).send(err);
     }
 };
 
 module.exports.updateOrderController = async (req, res) => {
-    const id = req.params.productId;
+    const id = req.params.orderId;
     const orderInputValue = req.body;
-console.log(id, orderInputValue)
+console.log("orderId", id, orderInputValue)
     // validation update operation and inputData
     const keysInput = Object.keys(orderInputValue);
     const allowedForUpdates = ["status"];
@@ -250,9 +351,17 @@ console.log(id, orderInputValue)
 
         if (!order) return res.status(404).send("Order Not Found");
 
-        res.send(order);
+        const resData = {
+            order,
+            success: {
+              title: 'Order Update',
+              message: `The status of the order ${order._id} has been updated successfully.`
+          }
+        }
+
+        return res.status(200).send(resData);
 
     } catch (err) {
-        res.status(500).send(err);;
+        return res.status(500).send(err);;
     }
 };

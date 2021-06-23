@@ -26,10 +26,19 @@ module.exports.addProductController = async (req, res) => {
     const newProduct = new Product(pickedProperty);
     await newProduct.save();
 
-    res.send(newProduct);
+  
+    const resData = {
+      newProduct,
+      success: {
+        title: 'Product Create',
+        message: 'You have created a product successfully.'
+    }
+  }
+
+  return res.status(200).send(resData);
 
   } catch (err) {
-    res.status(500).send(err);;
+    return res.status(500).send(err);;
   }
 };
 
@@ -37,9 +46,19 @@ module.exports.getProductsController = async (req, res) => {
   // Getting all products from server
   try {
     const products = await Product.find();
-    res.send(products);
+
+    const resData = {
+      products,
+      success: {
+        title: 'All Products',
+        message: 'All the products are loaded successfully.'
+    }
+  }
+
+  return res.status(200).send(resData);
+
   } catch (err) {
-    res.status(500).send(err);;
+    return res.status(500).send(err);;
   }
 };
 
@@ -50,10 +69,19 @@ module.exports.generateProductsController = async (req, res) => {
     if (!productResponse) return res.status(404).send("Product data is not available");
 
     const products = await Product.insertMany(productResponse.data, "-id");
-    res.send(products);
+
+    const resData = {
+      products,
+      success: {
+        title: 'Generate Products',
+        message: 'Products are generated from third party API successfully.'
+    }
+  }
+
+  return res.status(200).send(resData);
 
   } catch (err) {
-    res.status(500).send(err);
+    return res.status(500).send(err);
   }
 };
 
@@ -70,10 +98,18 @@ module.exports.getProductByIdController = async (req, res) => {
 
     if (!product) return res.status(404).send("Product Not Found");
 
-    res.send(product);
+    const resData = {
+      product,
+      success: {
+        title: 'Product Detail',
+        message: `${product.title}'s detail is loaded successfully.`
+    }
+  }
+
+  return res.status(200).send(resData);
 
   } catch (err) {
-    res.status(500).send(err);;
+    return res.status(500).send(err);;
   }
 };
 
@@ -86,14 +122,22 @@ module.exports.getProductsByCategoryController = async (req, res) => {
 
   // Getting product by ID from server
   try {
-    const product = await Product.find({category});
+    const products = await Product.find({category});
 
-    if (!product) return res.status(404).send("Product Not Found");
+    if (!products) return res.status(404).send("Product Not Found");
 
-    res.send(product);
+    const resData = {
+      products,
+      success: {
+        title: `${category} Products`,
+        message: `All ${category} Products are loaded successfully.`
+    }
+  }
+
+  return res.status(200).send(resData);
 
   } catch (err) {
-    res.status(500).send(err);;
+    return res.status(500).send(err);;
   }
 };
 
@@ -110,10 +154,18 @@ module.exports.deleteProductController = async (req, res) => {
 
     if (!product) return res.status(404).send("Product Not Found");
 
-    res.send(product);
+    const resData = {
+      product,
+      success: {
+        title: 'Delete Product',
+        message: `The product ${product.title} is deleted successfully.`
+    }
+  }
+
+  return res.status(200).send(resData);
 
   } catch (err) {
-    res.status(500).send(err);;
+    return res.status(500).send(err);;
   }
 };
 
@@ -123,7 +175,7 @@ module.exports.updateProductsController = async (req, res) => {
 
   // validation update operation and inputData
   const keysInput = Object.keys(productInputValue);
-  const allowedForUpdates = ["title", "price", "description", "category", "image"];
+  const allowedForUpdates = ["title", "price", "description", "category", "image", "quantity"];
 
   // Check if any extra invalid field out of allowedForUpdates is requested or not
   const isAllowed = keysInput.every((update) =>
@@ -150,9 +202,18 @@ module.exports.updateProductsController = async (req, res) => {
       }
     );
     if (!product) return res.status(404).send("Product Not Found");
-    res.send(product);
+
+    const resData = {
+      product,
+      success: {
+        title: 'Update Product',
+        message: `The product ${product.title} is updated successfully.`
+    }
+  }
+
+  return res.status(200).send(resData);
 
   } catch (err) {
-    res.status(500).send(err);;
+    return res.status(500).send(err);;
   }
 };

@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 
 module.exports.auth = async (req, res, next) => {
-    console.log(req.signedCookies)
+    // console.log("signedCookies==", req.signedCookies)
+    
     if (req.signedCookies) {
         // Accessing cookies
         const token = req.signedCookies['auth'];
@@ -15,7 +16,7 @@ module.exports.auth = async (req, res, next) => {
             const user = await User.findById(decoded.id);
 
             if(!user) res.status(404).send("Logged in User not found");
-console.log(user)
+
             req.user = user;
             next();
 

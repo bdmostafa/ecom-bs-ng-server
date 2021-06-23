@@ -74,7 +74,7 @@ router.post(
 );
 
 // Update product data (authorization for super admin)
-router.patch(
+router.put(
     '/update/:productId',
     [
         auth,
@@ -94,7 +94,11 @@ router.patch(
             .notEmpty(),
         check('image', 'Image is required.')
             .optional()
-            .notEmpty()
+            .notEmpty(),
+        check('quantity', 'Quantity is required.')
+            .isNumeric()
+            .optional()
+            .notEmpty(),
     ],
     updateProductsController
 );

@@ -25,12 +25,12 @@ const OrdersSchema = new Schema(
     date: {
       type: Date,
       required: [true, "Order date is required"],
-      default: new Date(),
+      default: new Date().toLocaleDateString(),
     },
     status: {
       type: String,
       required: [true, "Status is required"],
-      default: "pending",
+      default: "Pending",
     },
     success: {
       type: Boolean,

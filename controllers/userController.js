@@ -15,6 +15,7 @@ module.exports.addUserController = async (req, res) => {
   const pickedProperty = _.pick(req.body, [
     "name",
     "email",
+    "role",
     "password",
     "confirmPassword"
   ]);
@@ -31,15 +32,21 @@ module.exports.addUserController = async (req, res) => {
     await user.save();
 
     // Sending only 3 fields (without password) to the client
-    const { name, email, role } = user;
-    res.send({
+    const { _id, name, email, role } = user;
+
+    return res.status(200).send({
+      _id,
       name,
       email,
       role,
+      success: {
+        title: 'Create User Status',
+        message: `The user ${name} has been created successfully.`
+      }
     });
 
   } catch (err) {
-    res.status(500).send(err);
+    return res.status(500).send(err);
   }
 };
 
@@ -51,10 +58,18 @@ module.exports.getUserController = async (req, res) => {
     const user = await User.findById(id, "-password");
     if (!user) return res.status(404).send("User Not Exists");
 
-    res.send(user);
+    const resData = {
+      user,
+      success: {
+        title: 'User Info Status',
+        message: `The user ${user.name}'s info is loaded successfully.`
+      }
+    }
+
+    return res.status(200).send(resData);
 
   } catch (err) {
-    res.status(500).send(err);
+    return res.status(500).send(err);
   }
 };
 
@@ -63,10 +78,18 @@ module.exports.getUsersController = async (req, res) => {
     // Password is not allowed to pass to client section
     const users = await User.find({}, "-password");
 
-    res.send(users);
+    const resData = {
+      users,
+      success: {
+        title: 'All Users',
+        message: 'All the users info are loaded successfully.'
+      }
+    }
+
+    return res.status(200).res.send(resData);
 
   } catch (err) {
-    res.status(500).send(err);
+    return res.status(500).send(err);
   }
 };
 
@@ -110,15 +133,79 @@ module.exports.updateUserController = async (req, res) => {
 
     // Sending only 3 fields (without password) to the client
     const { name, email, role } = user;
-    res.send({
+    return res.status(200).send({
       name,
       email,
       role,
+      success: {
+        title: 'Update Status',
+        message: 'You have updated info successfully'
+      }
     });
 
     // res.send(user);
   } catch (err) {
-    res.status(500).send(err);
+    return res.status(500).send(err);
+  }
+};
+
+module.exports.updateUserBySuperAdminController = async (req, res) => {
+  const _id = req.params.userId;
+  const userInputValue = req.body;
+
+  // validation update operation and inputData
+  const keysInput = Object.keys(userInputValue);
+  const allowedForUpdates = ["name", "email", "password", "confirmPassword", "role"];
+
+  // Check if any extra invalid field out of allowedForUpdates is requested or not
+  const isAllowed = keysInput.every((update) =>
+    allowedForUpdates.includes(update)
+  );
+  if (!isAllowed) return res.status(400).send("Invalid Update Operation.");
+
+  // Dealing with errors on express-validator
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(404).send(errors.array());
+
+  // After passing all errors and validations, executes try/catch
+  // Update user from server
+  try {
+    const user = await User.findOneAndUpdate(
+      {
+        _id
+      },
+      userInputValue,
+      {
+        // For adding new user to be updated
+        new: true,
+        // upsert: true,
+        // Active validating rules from Schema model when updating
+        runValidators: true,
+        context: 'query'
+      }
+    );
+
+    if (!user) return res.status(404).send("User Not Found");
+
+    const userData = {
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt
+      },
+      success: {
+        title: 'User Info Update',
+        message: `You have updated the user ${user.name}'s info successfully.`
+      }
+    };
+
+    return res.status(200).send(userData);
+
+    // res.send(user);
+  } catch (err) {
+    return res.status(500).send(err);
   }
 };
 
@@ -136,15 +223,25 @@ module.exports.deleteUserController = async (req, res, next) => {
     });
 
     if (!user) return res.status(404).send("User Not Found");
-    res.send(user);
+
+    const resData = {
+      user,
+      success: {
+        title: 'Delete User',
+        message: `The user ${user.name} has been deleted successfully.`
+      }
+    }
+
+    return res.status(200).send(resData);
 
   } catch (err) {
-    res.status(500).send(err);;
+    return res.status(500).send(err);;
   }
 };
 
 module.exports.deleteUserBySuperAdminController = async (req, res, next) => {
   const loggedInUserId = req.user?._id;
+  const userIdToBeDeleted = req.params.userId;
   if(!loggedInUserId) return res.status(404).send("LoggedIn User ID Not Found");
 
   // const userInputValue = req.body;
@@ -161,24 +258,33 @@ module.exports.deleteUserBySuperAdminController = async (req, res, next) => {
   // const userIdToDelete = userInputValue.userId
 
   // Pick only valid field
-  const { userId } = _.pick(req.body, ["userId"])
+  // const { userId } = _.pick(req.body, ["userId"])
 
   // Dealing with errors on express-validator
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).send(errors.array());
-console.log(_.pick(req.body, ["userId"]))
+// console.log(_.pick(req.body, ["userId"]))
   // Delete user from server
   try {
     // const user = await User.findOneAndDelete({
     //   _id: userIdToDelete,
     // });
-    const user = await User.findByIdAndDelete(userId);
+    const user = await User.findByIdAndDelete(userIdToBeDeleted);
 
     if (!user) return res.status(404).send("User Not Found");
-    res.send(user);
+
+    const resData = {
+      user,
+      success: {
+        title: 'Delete User',
+        message: `You have deleted the user ${user.name} successfully.`
+      }
+    }
+
+    return res.status(200).send(resData);
 
   } catch (err) {
-    res.status(500).send(err);;
+    return res.status(500).send(err);;
   }
 };
 
@@ -203,29 +309,55 @@ module.exports.loginController = async (req, res) => {
     // Send token as cookie
     res.cookie("auth", token, {
       // httpOnly: true,
-      sameSite: true,
+      // sameSite: true,
       signed: true,
       maxAge: 4 * 60 * 60 * 1000,
     });
 
-    // Successfully LoggedIn and send only 3 fields
+    // Successfully LoggedIn and send user without password
     const userData = {
-      role: user.role, 
-      name: user.name, 
-      email: user.email,
-      msg: 'Successfully LoggedIn'
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt
+      },
+      success: {
+        title: 'Login Status',
+        message: 'You have loggedIn successfully'
+      }
     };
 
-    res.send(userData);
+    return res.status(200).send(userData);
 
   } catch (err) {
     console.log(err)
-    res.status(500).send(err);
+    return res.status(500).send(err);
   }
 };
 
 module.exports.logoutController = async (req, res) => {
-  console.log('ok')
-  res.clearCookie("auth");
-  res.send("Successfully logout");
+  const loggedInUserId = req.user?._id;
+
+  try {
+    const user = await User.findById(loggedInUserId);
+    if (!user) return res.status(404).send("User Not Exists");
+
+    res.clearCookie("auth");
+
+    const resData = {
+      success: {
+        title: 'Logout Status',
+        message: 'You have logged out successfully'
+    }
+  }
+
+    return res.status(200).send(resData);
+
+  } catch (err) {
+    console.log(err)
+    return res.status(500).send(err);
+  }
+  
 };
