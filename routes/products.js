@@ -30,7 +30,7 @@ router.get(
     '/generate-products',
     [
         auth,
-        superAdmin
+        adminOrSuperAdmin
     ],
     generateProductsController
 );

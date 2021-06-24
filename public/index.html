@@ -1,170 +1,188 @@
-<!-- <html>
+<!DOCTYPE html>
 
-<head>
-  <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
-</head>
-
-<body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
-</body>
-
-</html> -->
-
-
-<!doctype html>
-<!--
-
-  Instructions:
-
-  - Save this file.
-  - Replace "USER" with your GitHub username.
-  - Replace "REPO" with your GitHub repo name.
-  - Replace "Your Project" with your project name.
-  - Upload this file (or commit to GitHub Pages).
-
-  Customize as you see fit!
-
--->
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width" />
 
-<head>
-  <meta charset='utf-8'>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="./stylesheets/style.css" />
 
-  <title>Ecom-bs | Restful API Documentation</title>
+    <title>Ecom-bs | Restful API Documentation</title>
 
-  <!-- Flatdoc -->
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script src='https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/legacy.js'></script>
-  <script src='https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/flatdoc.js'></script>
+    <!-- Flatdoc -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/legacy.js"></script>
+    <script src="https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/flatdoc.js"></script>
 
-  <!-- Flatdoc theme -->
-  <link href='https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/theme-white/style.css' rel='stylesheet'>
-  <script src='https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/theme-white/script.js'></script>
+    <!-- Flatdoc theme -->
+    <link
+      href="https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/theme-white/style.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/theme-white/script.js"></script>
 
-  <!-- Meta -->
-  <meta content="Ecom Restful API" property="og:title">
-  <meta content="Ecom Restful API MERN Ecommerce With Node And MongoDB" name="description">
+    <!-- Meta -->
+    <meta content="Ecom Restful API" property="og:title" />
+    <meta
+      content="Ecom Restful API MERN Ecommerce With Node And MongoDB"
+      name="description"
+    />
 
-  <!-- Initializer -->
-  <script>
-    Flatdoc.run({
-      fetcher: Flatdoc.github('USER/REPO')
-    });
-  </script>
-</head>
+    <!-- Initializer -->
+    <script>
+      Flatdoc.run({
+        fetcher: Flatdoc.github("USER/REPO"),
+      });
+    </script>
+  </head>
 
-<body role='flatdoc'>
-
-  <div class='header'>
-    <div class='left'>
-      <h1>Ecom - Restful API Documentation</h1>
-      <ul>
-        <li><a href='https://github.com/bdmostafa/ecom-bs'>View on GitHub</a></li>
-        <li><a href='https://github.com/bdmostafa/ecom-bs/issues'>Issues</a></li>
-      </ul>
-    </div>
-    <div class='right'>
-      <!-- GitHub buttons: see http://ghbtns.com -->
-      <iframe src="http://ghbtns.com/github-btn.html?user=bdmostafa&amp;repo=ecom-bs&amp;type=watch&amp;count=true"
-        allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
-    </div>
-  </div>
-
-  <div class='content-root'>
-    <div class='menubar'>
-      <div class='menu section' role='flatdoc-menu'>
-        <strong>Collections</strong>
+  <body>
+    <div class="header">
+      <div class="left">
+        <h1>Ecom - Restful API Documentation</h1>
         <ul>
-          <li> <a href="#users"></a> User</li>
-          <li id="products">Product</li>
-          <li id="orders">Order</li>
+          <li>
+            <a href="https://github.com/bdmostafa/ecom-bs-ng-server"
+              >View on GitHub</a
+            >
+          </li>
+          <li>
+            <a href="https://github.com/bdmostafa/ecom-bs-ng-server/issues"
+              >Issues</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="right">
+        <!-- GitHub buttons: see http://ghbtns.com -->
+        <iframe
+          src="http://ghbtns.com/github-btn.html?user=bdmostafa&amp;repo=ecom-bs-ng-server&amp;type=watch&amp;count=true"
+          allowtransparency="true"
+          frameborder="0"
+          scrolling="0"
+          width="110"
+          height="20"
+        ></iframe>
+      </div>
+    </div>
+
+    <div class="content-root">
+      <div class="menubar">
+        <div class="menu section">
+          <h2 class="h2"><strong>Collections</strong></h2>
+          <ul>
+            <li><a href="#users">Users </a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#orders">Orders</a></li>
+          </ul>
+        </div>
+      </div>
+      <div role="flatdoc-content" class="content">
+        <h3>API Endpoints</h3>
+        <h4 id="users">Users</h4>
+        <ul>
+          <li>
+            GET <code>/api/users</code> Get all users (authorization for admin
+            and super admin)
+          </li>
+          <li>
+            GET <code>/api/users/me</code> Get loggedIn user info
+            (Authentication for loggedIn user)
+          </li>
+          <li>
+            POST <code>/api/users/create</code> Create a new account/ Register
+            an user
+          </li>
+          <li>POST <code>/api/users/login</code> Login as an user/ customer</li>
+          <li>
+            PUT <code>/api/users/update/me</code> Update loggedIn user info
+            (authorization for loggedIn user)
+          </li>
+          <li>
+            PUT <code>/api/users/update/{userId}</code> Update any user info
+            within role (authorization for only super admin)
+          </li>
+          <li>
+            DELETE <code>/api/users/delete/me</code> Delete an user
+            (authentication for loggedIn user)
+          </li>
+          <li>
+            DELETE <code>/api/users/delete/{userId}</code> Delete any user
+            (authorization for only super admin)
+          </li>
+          <li>
+            DELETE <code>/api/users/logout</code> Logout an user (Authentication
+            for loggedIn user)
+          </li>
+        </ul>
+
+        <h4 id="products">Products</h4>
+        <ul>
+          <li>GET <code>/api/products</code> Get all products</li>
+          <li>
+            GET <code>/api/products/{productId}</code> Get product detail by id
+          </li>
+          <li>
+            GET <code>/api/products/category/{categoryName}</code> Get products
+            by category
+          </li>
+          <li>
+            GET <code>/api/products/generate-products</code> Generate products
+            from third party API (authentication for admin and super admin)
+          </li>
+          <li>
+            POST <code>/api/products/create</code> Create a new product
+            (authentication for admin and super admin)
+          </li>
+          <li>
+            PUT <code>/api/products/update/{productId}</code> Update a product
+            (authentication for only super admin)
+          </li>
+          <li>
+            DELETE <code>/api/products/delete/{productId}</code> Delete a
+            product (authentication for only super admin)
+          </li>
+        </ul>
+
+        <h4 id="orders">Orders</h4>
+        <ul>
+          <li>
+            GET <code>/api/orders</code> get all orders (authorization for only
+            super admin)
+          </li>
+          <li>
+            GET <code>/api/orders/{orderId}</code> Get a single order by id
+            (authorization for only super admin)
+          </li>
+          <li>
+            GET <code>/api/orders/orders-by-date/{date}</code> Get orders per
+            day (authorization for only super admin)
+          </li>
+          <li>
+            GET <code>/api/orders/pending-orders</code> Get pending orders
+            (authorization for admin and super admin)
+          </li>
+          <li>
+            GET <code>/api/orders/user/my-orders</code> Get loggedIn user's
+            orders (authentication for loggedIn user)
+          </li>
+          <li>
+            POST <code>/api/orders/payment</code> Payment for an order
+            (authentication for loggedIn user)
+          </li>
+          <li>
+            POST <code>/api/orders/create</code> Place an order (authentication
+            for loggedIn user)
+          </li>
+          <li>
+            PUT <code>/api/orders/update/{orderId}</code> Update any order
+            status (authorization for admin and super admin)
+          </li>
+
+          <div className="separator"></div>
         </ul>
       </div>
     </div>
-    <div role='flatdoc-content' class='content'>
-      <h3>API Endpoints</h3>
-      <h4 id="users">Users</h4>
-      <ul>
-        <li>
-          POST <code>/api/users/create</code> create a new account
-        </li>
-        <li>
-          POST <code>/api/users/login</code> login as user
-        </li>
-        <li>
-          GET <code>/api/users</code> get all users
-        </li>
-        <li>
-          PATCH <code>/api/users/update/me</code> update an user by the same user
-        </li>
-        <li>
-          DELETE <code>/api/users/delete/me</code> delete an user by the same user
-        </li>
-        <li>
-          DELETE <code>/api/users/delete</code> delete an user by super admin
-        </li>
-      </ul>
-
-      <h4 id="products">Products</h4>
-      <ul>
-        <li>
-          GET <code>/api/products</code> get all products
-        </li>
-        <li>
-          GET <code>/api/products/{productId}</code> get a product by id
-        </li>
-        <li>
-          GET <code>/api/products/category/{categoryName}</code> get products by category
-        </li>
-        <li>
-          POST <code>/api/products/create</code> create a new product
-        </li>
-        <li>
-          PATCH <code>/api/products/update/{productId}</code> update a product
-        </li>
-        <li>
-          DELETE <code>/api/products/delete/{productId}</code> Delete a product
-        </li>
-        <li>
-          GET <code>/api/products/generate-products</code> Generate product from
-          third party API
-        </li>
-      </ul>
-
-      <h4 id="orders">Orders</h4>
-      <ul>
-        <li>
-          GET <code>/api/orders</code> get all orders
-        </li>
-        <li>
-          GET <code>/api/order/{orderId}</code> get an order by ID
-        </li>
-        <li>
-          GET <code>/api/orders/pending-orders</code> get pending orders
-        </li>
-        <li>
-          POST <code>/api/orders/create</code> create a new order
-        </li>
-        <li>
-          PATCH <code>/api/orders/update/{orderId}</code> update an order
-        </li>
-        <li>
-          GET <code>/api/orders/{orderId}</code> get a single order
-        </li>
-        <li>
-          GET <code>/api/orders/orders-by-date</code> get orders by date
-        </li>
-        <div className="separator"></div>
-        
-      </ul>
-      
-    </div>
-  </div>
-
-</body>
-
+  </body>
 </html>
