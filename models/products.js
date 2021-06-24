@@ -31,6 +31,7 @@ const ProductsSchema = new Schema(
         quantity: {
             type: Number,
             required: [true, 'Quantity is required'],
+            default: 10
         },
 
     },
