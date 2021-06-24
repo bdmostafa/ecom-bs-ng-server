@@ -46,6 +46,7 @@ module.exports.addUserController = async (req, res) => {
     });
 
   } catch (err) {
+    console.log(err)
     return res.status(500).send(err);
   }
 };
@@ -86,7 +87,7 @@ module.exports.getUsersController = async (req, res) => {
       }
     }
 
-    return res.status(200).res.send(resData);
+    return res.status(200).send(resData);
 
   } catch (err) {
     return res.status(500).send(err);

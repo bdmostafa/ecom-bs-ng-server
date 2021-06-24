@@ -4,6 +4,11 @@
  * Module dependencies.
  */
 
+ require('dotenv').config({
+  path: './config/keys.env'
+})
+
+
 var app = require('../app');
 var debug = require('debug')('ecom-server:server');
 var http = require('http');
