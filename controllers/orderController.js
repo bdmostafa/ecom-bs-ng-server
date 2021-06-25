@@ -8,8 +8,14 @@ const startOfDay = require('date-fns/startOfDay')
 const Order = require("../models/orders");
 
 module.exports.orderPaymentController = async (req, res) => {
+    const resMsg = {
+        success: {
+            title: 'Payment Status',
+            message: 'Your payment has been received successfully'
+        }
+    }
     setTimeout(() => {
-        return res.status(200).json({success: true});
+        return res.status(200).json(resMsg);
     }, 3000)
 };
 
