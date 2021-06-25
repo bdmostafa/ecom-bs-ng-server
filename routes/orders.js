@@ -83,8 +83,7 @@ router.get(
   "/:orderId",
   [
     check("orderId", "Order Not Found. Id is not valid").isMongoId(),
-    auth,
-    superAdmin
+    auth
   ],
   getOrderController
 );
