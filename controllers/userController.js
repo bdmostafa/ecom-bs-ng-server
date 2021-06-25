@@ -309,8 +309,9 @@ module.exports.loginController = async (req, res) => {
 
     // Send token as cookie
     res.cookie("auth", token, {
-      // httpOnly: true,
-      // sameSite: true,
+      httpOnly: false,
+      secure: true,
+      sameSite: true,
       signed: true,
       maxAge: 4 * 60 * 60 * 1000,
     });

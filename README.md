@@ -1,6 +1,5 @@
 # ECOM - BS
 
-### Client
 ## [Client Source](https://github.com/bdmostafa/ecom-bs-ng-client)
 ## [Client Live](https://ecom-bs.web.app/)
 
