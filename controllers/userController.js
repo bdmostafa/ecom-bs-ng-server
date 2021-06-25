@@ -311,9 +311,10 @@ module.exports.loginController = async (req, res) => {
     res.cookie("auth", token, {
       httpOnly: false,
       secure: false,
-      // sameSite: true,
+      sameSite: false,
       signed: true,
       maxAge: 4 * 60 * 60 * 1000,
+      
     });
 
     // Successfully LoggedIn and send user without password
