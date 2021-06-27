@@ -309,12 +309,12 @@ module.exports.loginController = async (req, res) => {
 
     // Send token as cookie
     res.cookie("auth", token, {
-      httpOnly: false,
+      // httpOnly: false,
       secure: true,
       // sameSite: 'none',
       signed: true,
       maxAge: 4 * 60 * 60 * 1000,
-      domain:'ecom-bs.web.app'
+      domain:'localhost:4200'
     });
 
     // Successfully LoggedIn and send user without password
@@ -326,6 +326,7 @@ module.exports.loginController = async (req, res) => {
         role: user.role,
         createdAt: user.createdAt
       },
+      token,
       success: {
         title: 'Login Status',
         message: 'You have loggedIn successfully'
